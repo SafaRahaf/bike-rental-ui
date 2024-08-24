@@ -4,11 +4,10 @@ import Login from "../pages/Login";
 import Register from "../pages/Register";
 import { adminPaths } from "./adminRoutes";
 import { userPaths } from "./userRoutes";
-import { About } from "../pages/aboutUs";
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/user",
     element: <App />,
   },
   {

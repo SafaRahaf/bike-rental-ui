@@ -6,8 +6,8 @@ import Profile from "../pages/user/Profile";
 
 export const userPaths = [
   {
-    name: "Dashboard",
-    path: "dashboard",
+    name: "",
+    path: "",
     element: <MainHome />,
   },
   {

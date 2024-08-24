@@ -16,7 +16,7 @@ const AppHeader = () => {
     >
       <div className="flex-1">
         <Title level={3} className="m-0">
-          <Link to="/" className="flex items-center space-x-2 text-white">
+          <Link to="/user" className="flex items-center space-x-2 text-white">
             <img src={Logo} alt="logo" className="h-8 w-auto" />
             <span
               className="text-lg font-semibold mt-2 hidden md:block"
@@ -33,7 +33,7 @@ const AppHeader = () => {
         style={{ backgroundColor: SecondColor }}
       >
         <Menu.Item key="home">
-          <Link className="text-white" to="/">
+          <Link className="text-white" to="/user">
             Home
           </Link>
         </Menu.Item>
