@@ -1,6 +1,7 @@
 import { Layout, Menu } from "antd";
 import { Link } from "react-router-dom";
 import { Typography } from "antd";
+import { IoPerson } from "react-icons/io5";
 import { SecondColor } from "../helpers/DefaultStyles";
 import Logo from "../../assets/logo.png";
 
@@ -18,7 +19,7 @@ const AppHeader = () => {
           <Link to="/" className="flex items-center space-x-2 text-white">
             <img src={Logo} alt="logo" className="h-8 w-auto" />
             <span
-              className="text-lg font-semibold mt-2"
+              className="text-lg font-semibold mt-2 hidden md:block"
               style={{ color: "white" }}
             >
               Bike Rental
@@ -28,7 +29,7 @@ const AppHeader = () => {
       </div>
       <Menu
         mode="horizontal"
-        className="flex-2 justify-end"
+        className="flex-1 justify-end"
         style={{ backgroundColor: SecondColor }}
       >
         <Menu.Item key="home">
@@ -41,19 +42,20 @@ const AppHeader = () => {
             About
           </Link>
         </Menu.Item>
-        <Menu.Item key="bikeManagement">
-          <Link className="text-white" to="/user/bikeManagement">
-            Bike Management
-          </Link>
-        </Menu.Item>
         <Menu.Item key="rentalManagement">
           <Link className="text-white" to="/user/rentalManagement">
-            Rental Management
+            Rental
+          </Link>
+        </Menu.Item>
+        <Menu.Item key="bikeManagement">
+          <Link className="text-white" to="/user/bikeManagement">
+            Bike
           </Link>
         </Menu.Item>
         <Menu.Item key="profile">
           <Link className="text-white" to="/user/profile">
-            👩‍💼 Profile
+            {/* <IoPerson/> */}
+            🙍🏻‍♂️
           </Link>
         </Menu.Item>
       </Menu>

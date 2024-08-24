@@ -1,16 +1,18 @@
 import { Outlet } from "react-router-dom";
 import { Layout } from "antd";
 import AppHeader from "./Header";
+import Footer from "./Footer";
 
 const { Content } = Layout;
 
 const MainLayout = () => {
   return (
-    <Layout className="h-full" style={{ height: "100%" }}>
+    <Layout className="min-h-screen flex flex-col">
       <AppHeader />
-      <Content>
+      <Content className="flex-grow">
         <Outlet />
       </Content>
+      <Footer />
     </Layout>
   );
 };
