@@ -57,14 +57,14 @@ const Reviews = () => {
   return (
     <div className="py-16 bg-white">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-8">
+        <h2 className="text-3xl font-bold text-center mb-8 text-[#72445e]">
           Customer Reviews
         </h2>
         <Row gutter={16}>
           {reviews.map((review) => (
             <Col xs={24} sm={12} md={8} key={review.id} className="mb-4 ">
               <Card
-                className="flex items-start bg-gradient-to-r to-pink-800 from-cyan-900 text-white"
+                className="flex items-start bg-gradient-to-r to-pink-500 from-cyan-300 text-white"
                 cover={
                   <img
                     alt={review.name}

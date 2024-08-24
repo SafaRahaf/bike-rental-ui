@@ -49,7 +49,9 @@ const WhyChooseUsSecton = () => {
   return (
     <div className="py-16 bg-gray-50">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-8 ">Why Choose Us?</h2>
+        <h2 className="text-3xl font-bold text-center mb-8 text-[#72445e]">
+          Why Choose Us?
+        </h2>
         <Row gutter={16}>
           {reasons.map((reason) => (
             <Col xs={24} sm={12} md={6} key={reason.id} className="mb-4">

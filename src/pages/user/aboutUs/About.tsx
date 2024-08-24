@@ -5,12 +5,12 @@ import ContactInformation from "./ContactInformation";
 
 const About = () => {
   return (
-    <>
+    <div className="m-6">
       <MissionStatement />
       <TeamSection />
       <HistoryAndMilestones />
       <ContactInformation />
-    </>
+    </div>
   );
 };
 

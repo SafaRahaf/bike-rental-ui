@@ -31,7 +31,7 @@ const FeaturedSection = () => {
   return (
     <div className="py-16 bg-gray-100">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-8">
+        <h2 className="text-3xl font-bold text-center mb-8 text-[#72445e]">
           Available Bikes for Rent
         </h2>
         <Row gutter={16}>
@@ -52,7 +52,7 @@ const FeaturedSection = () => {
             </Col>
           ))}
         </Row>
-        <Button className="w-full bg-gradient-to-r from-pink-800 to-cyan-900 hover:bg-cyan-900 text-white py-5 font-semibold text-lg">
+        <Button className="w-full bg-gradient-to-r from-pink-500 to-cyan-300 hover:bg-cyan-900 text-white py-5 font-semibold text-lg">
           See More
         </Button>
       </div>

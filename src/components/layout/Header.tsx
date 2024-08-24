@@ -2,8 +2,8 @@ import { Layout, Menu } from "antd";
 import { Link } from "react-router-dom";
 import { Typography } from "antd";
 import { IoPerson } from "react-icons/io5";
-import { SecondColor } from "../helpers/DefaultStyles";
 import Logo from "../../assets/logo.png";
+import { SecondColor } from "../helpers/DefaultStyles";
 
 const { Header } = Layout;
 const { Title } = Typography;

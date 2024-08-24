@@ -43,7 +43,7 @@ const coupons = [
 
 const CouponsAndDiscountsSection = () => {
   return (
-    <div className="py-16 bg-gradient-to-r from-pink-800 to-cyan-900">
+    <div className="py-16 bg-gradient-to-r from-pink-500 to-cyan-300">
       <div className="container mx-auto px-4">
         <h2 className="text-4xl font-bold text-center text-white mb-12">
           Exclusive Coupons & Discounts

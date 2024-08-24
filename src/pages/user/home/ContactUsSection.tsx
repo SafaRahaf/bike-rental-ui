@@ -6,16 +6,16 @@ const { Title, Paragraph } = Typography;
 const ContactUsSection = () => {
   return (
     <div className="py-16 bg-gray-50">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 text-[#72445e]">
         <Title level={2} className="text-center mb-12">
-          Contact Us
+          <span className="text-[#72445e] font-bold">Contact Us</span>
         </Title>
 
         <Row gutter={16}>
           <Col xs={24} md={12}>
             <div className="p-8 bg-white rounded-lg shadow-lg">
               <Title level={4} className="mb-3">
-                Get in Touch
+                <span className="text-[#72445e]">Get in Touch</span>
               </Title>
               <Form
                 layout="vertical"
@@ -57,7 +57,7 @@ const ContactUsSection = () => {
                     type="primary"
                     htmlType="submit"
                     block
-                    className="bg-gradient-to-r from-pink-800 to-cyan-900"
+                    className="bg-gradient-to-r from-pink-500 to-cyan-300"
                   >
                     Send Message
                   </Button>
@@ -66,7 +66,7 @@ const ContactUsSection = () => {
             </div>
           </Col>
           <Col xs={24} md={12}>
-            <div className="p-8 bg-white rounded-lg shadow-lg bg-[#72445e] text-white">
+            <div className="p-8 bg-white rounded-lg shadow-lg bg-gradient-to-r from-pink-500 to-cyan-300 text-white">
               <Title level={4} className="mb-4" style={{ color: "white" }}>
                 Our Contact Information
               </Title>
