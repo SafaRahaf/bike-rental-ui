@@ -1,8 +1,8 @@
-import RentalManagement from "../pages/user/rentalManagement/RentalManagement";
+import RentalManagement from "../pages/user/rentalManagement/RentalMenagement";
 import BikeManagement from "../pages/user/bikeManagement/BikeManagement";
-import { About } from "../pages/user/aboutUs";
-import { MainHome } from "../pages/user/home";
 import Profile from "../pages/user/Profile";
+import { About } from "../pages/aboutUs";
+import { MainHome } from "../pages/home";
 
 export const userPaths = [
   {

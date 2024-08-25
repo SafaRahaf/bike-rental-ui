@@ -7,7 +7,7 @@ import { userPaths } from "./userRoutes";
 
 const router = createBrowserRouter([
   {
-    path: "/user",
+    path: "/",
     element: <App />,
   },
   {

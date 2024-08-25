@@ -9,7 +9,7 @@ const Login = () => {
   const onFinish = (values: any) => {
     console.log("Received values from form: ", values);
     message.success("Login successful!");
-    navigate("/");
+    navigate("/user");
   };
 
   return (

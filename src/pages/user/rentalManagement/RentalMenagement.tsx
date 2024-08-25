@@ -1,7 +1,7 @@
 import BookingProcess from "./BookingProcess";
 import MyRentalsPage from "./MyRentalsPage";
 
-const RentalManagement = () => {
+const RentalMenagement = () => {
   return (
     <div>
       <BookingProcess />
@@ -10,4 +10,4 @@ const RentalManagement = () => {
   );
 };
 
-export default RentalManagement;
+export default RentalMenagement;

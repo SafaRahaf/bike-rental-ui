@@ -1,26 +1,23 @@
-import { Form, Input, Button, Upload, message } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
-import { RcFile, UploadFile } from "antd/es/upload/interface";
+import { Form, Input, Button, message } from "antd";
 import { useNavigate } from "react-router-dom";
-
-const { TextArea } = Input;
+import { useRegisterMutation } from "../redux/features/auth.api";
+import { useAppDispatch } from "../redux/hooks";
+import { setUser } from "../redux/features/authSlice";
 
 const Register = () => {
   const [form] = Form.useForm();
-
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const [register, { isLoading }] = useRegisterMutation();
 
-  const onFinish = (values: any) => {
-    console.log("Received values from form: ", values);
-    message.success("Registration successful!");
-    navigate("/login");
-  };
-
-  const handleUploadChange = (info: { file: UploadFile }) => {
-    if (info.file.status === "done") {
-      message.success(`${info.file.name} file uploaded successfully`);
-    } else if (info.file.status === "error") {
-      message.error(`${info.file.name} file upload failed.`);
+  const onFinish = async (values: any) => {
+    try {
+      const { data } = await register(values).unwrap();
+      dispatch(setUser(data));
+      message.success("Registration successful!");
+      navigate("/user");
+    } catch (error) {
+      message.error(error.data?.message || "Registration failed");
     }
   };
 
@@ -43,7 +40,6 @@ const Register = () => {
         >
           <Input />
         </Form.Item>
-
         <Form.Item
           label="Email"
           name="email"
@@ -57,7 +53,6 @@ const Register = () => {
         >
           <Input />
         </Form.Item>
-
         <Form.Item
           label="Password"
           name="password"
@@ -65,7 +60,6 @@ const Register = () => {
         >
           <Input.Password />
         </Form.Item>
-
         <Form.Item
           label="Phone"
           name="phone"
@@ -75,35 +69,15 @@ const Register = () => {
         >
           <Input />
         </Form.Item>
-
-        <Form.Item
-          label="Profile Image"
-          name="profileImage"
-          valuePropName="fileList"
-          getValueFromEvent={(e: { file: RcFile }) => [e.file]}
-          extra="Optional"
-        >
-          <Upload
-            name="profileImage"
-            listType="picture"
-            className="upload-list-inline"
-            showUploadList={false}
-            onChange={handleUploadChange}
-          >
-            <Button icon={<UploadOutlined />}>Upload</Button>
-          </Upload>
-        </Form.Item>
-
         <Form.Item
           label="Address"
           name="address"
           rules={[{ required: true, message: "Please input your address!" }]}
         >
-          <TextArea rows={4} />
+          <Input.TextArea rows={4} />
         </Form.Item>
-
         <Form.Item>
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" htmlType="submit" loading={isLoading}>
             Register
           </Button>
         </Form.Item>
