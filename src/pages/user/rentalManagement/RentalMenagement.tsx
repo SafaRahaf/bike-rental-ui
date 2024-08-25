@@ -3,7 +3,7 @@ import MyRentalsPage from "./MyRentalsPage";
 
 const RentalMenagement = () => {
   return (
-    <div>
+    <div className="m-9">
       <BookingProcess />
       <MyRentalsPage />
     </div>

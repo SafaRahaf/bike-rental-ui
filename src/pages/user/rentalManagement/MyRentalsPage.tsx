@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Tabs, Table, Button, message } from "antd";
 
 const MyRentalsPage = () => {
   const [activeTab, setActiveTab] = useState("unpaid");
 
   const paidRentals = [
-    // Example data, replace with real data
     {
       id: 1,
       bikeName: "Yamaha R1",
@@ -16,7 +15,6 @@ const MyRentalsPage = () => {
   ];
 
   const unpaidRentals = [
-    // Example data, replace with real data
     {
       id: 2,
       bikeName: "Kawasaki Ninja",
@@ -28,7 +26,6 @@ const MyRentalsPage = () => {
 
   const handlePayment = (rentalId: number) => {
     message.success(`Payment successful for rental ${rentalId}!`);
-    // Move the rental from unpaid to paid
   };
 
   const columns = [
