@@ -1,15 +1,24 @@
 import { Form, Input, Button, message } from "antd";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useLoginMutation } from "../redux/features/auth.api";
 
 const Login = () => {
   const [form] = Form.useForm();
-
   const navigate = useNavigate();
+  const [login, { isLoading }] = useLoginMutation();
 
-  const onFinish = (values: any) => {
-    console.log("Received values from form: ", values);
-    message.success("Login successful!");
-    navigate("/user");
+  const onFinish = async (values: any) => {
+    try {
+      const response = await login(values).unwrap();
+      message.success("Login successful!");
+      if (response.data.role === "admin") {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/user");
+      }
+    } catch (error: any) {
+      message.error(error?.data?.message || "Login failed. Please try again.");
+    }
   };
 
   return (
@@ -17,7 +26,7 @@ const Login = () => {
       className="border shadow-lg"
       style={{ maxWidth: 600, margin: "25px auto", padding: "20px" }}
     >
-      <h2>Register</h2>
+      <h2>Login</h2>
       <Form
         form={form}
         layout="vertical"
@@ -45,12 +54,16 @@ const Login = () => {
         >
           <Input.Password />
         </Form.Item>
-
-        <Form.Item>
-          <Button type="primary" htmlType="submit">
-            Login
-          </Button>
-        </Form.Item>
+        <div className="flex justify-between">
+          <Form.Item>
+            <Button type="primary" htmlType="submit" loading={isLoading}>
+              Login
+            </Button>
+          </Form.Item>
+          <Link to="/register">
+            <Button className="bg-[#72445e] text-white">Register</Button>
+          </Link>
+        </div>
       </Form>
     </div>
   );

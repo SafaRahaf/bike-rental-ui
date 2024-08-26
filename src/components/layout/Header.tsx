@@ -3,6 +3,8 @@ import { Link, useLocation } from "react-router-dom";
 import { Typography } from "antd";
 import Logo from "../../assets/logo.png";
 import { SecondColor } from "../helpers/DefaultStyles";
+import { useAppDispatch } from "../../redux/hooks";
+import { logout } from "../../redux/features/authSlice";
 
 const { Header } = Layout;
 const { Title } = Typography;
@@ -12,7 +14,12 @@ const AppHeader = () => {
   const isUserPath = location.pathname.startsWith("/user");
   const isAdminPath = location.pathname.startsWith("/admin");
 
-  // Define User and Admin menu items
+  const dispatch = useAppDispatch();
+
+  const handleLogout = () => {
+    dispatch(logout());
+  };
+
   const userMenuItems = [
     {
       key: "home",
@@ -46,11 +53,24 @@ const AppHeader = () => {
         </Link>
       ),
     },
+
     {
       key: "profile",
       label: (
         <Link className="text-white" to="/user/profile">
           🙍🏻‍♂️
+        </Link>
+      ),
+    },
+    {
+      key: "bikeManagement",
+      label: (
+        <Link
+          className="text-white border p-2"
+          onClick={handleLogout}
+          to="/login"
+        >
+          Login out
         </Link>
       ),
     },
@@ -81,11 +101,24 @@ const AppHeader = () => {
         </Link>
       ),
     },
+
     {
       key: "profile",
       label: (
         <Link className="text-white" to="/admin/profile">
           🙍🏻‍♂️
+        </Link>
+      ),
+    },
+    {
+      key: "bikeManagement",
+      label: (
+        <Link
+          className="text-white border p-2"
+          onClick={handleLogout}
+          to="/login"
+        >
+          Login out
         </Link>
       ),
     },
@@ -99,7 +132,7 @@ const AppHeader = () => {
       <div className="flex-1">
         <Title level={3} className="m-0">
           <Link
-            to={isUserPath ? "/user" : "/admin"}
+            to={isUserPath ? "/user" : "/admin/dashboard"}
             className="flex items-center space-x-2 text-white"
           >
             <img src={Logo} alt="logo" className="h-8 w-auto" />
