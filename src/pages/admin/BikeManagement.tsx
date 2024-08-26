@@ -59,11 +59,20 @@ const BikeManagement = () => {
   };
 
   const handleAddBike = async (values: any) => {
+    // Parse numerical values
+    const bikeData = {
+      ...values,
+      pricePerHour: parseFloat(values.pricePerHour),
+      cc: parseInt(values.cc, 10),
+      year: parseInt(values.year, 10),
+    };
+
     try {
-      await addBike(values).unwrap();
+      await addBike(bikeData).unwrap();
       message.success("Bike added successfully!");
       refetch();
       setIsModalVisible(false);
+      form.resetFields();
     } catch (error) {
       message.error("Failed to add bike. Please try again.");
     }
@@ -184,6 +193,84 @@ const BikeManagement = () => {
         footer={null}
       >
         <Form form={form} layout="vertical" onFinish={handleAddBike}>
+          <Form.Item
+            name="name"
+            label="Name"
+            rules={[{ required: true, message: "Please enter bike name" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="description"
+            label="Description"
+            rules={[
+              { required: true, message: "Please enter bike description" },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="pricePerHour"
+            label="Price Per Hour"
+            rules={[{ required: true, message: "Please enter price per hour" }]}
+          >
+            <Input
+              type="number"
+              onChange={(e) =>
+                form.setFieldsValue({
+                  pricePerHour: parseFloat(e.target.value),
+                })
+              }
+            />
+          </Form.Item>
+          <Form.Item
+            name="cc"
+            label="CC"
+            rules={[{ required: true, message: "Please enter bike CC" }]}
+          >
+            <Input
+              type="number"
+              onChange={(e) =>
+                form.setFieldsValue({ cc: parseInt(e.target.value, 10) })
+              }
+            />
+          </Form.Item>
+          <Form.Item
+            name="year"
+            label="Year"
+            rules={[{ required: true, message: "Please enter bike year" }]}
+          >
+            <Input
+              type="number"
+              onChange={(e) =>
+                form.setFieldsValue({ year: parseInt(e.target.value, 10) })
+              }
+            />
+          </Form.Item>
+          <Form.Item
+            name="model"
+            label="Model"
+            rules={[{ required: true, message: "Please enter bike model" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="brand"
+            label="Brand"
+            rules={[{ required: true, message: "Please enter bike brand" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="isAvailable"
+            label="Availability"
+            rules={[{ required: true, message: "Please select availability" }]}
+          >
+            <Select>
+              <Select.Option value={true}>Available</Select.Option>
+              <Select.Option value={false}>Not Available</Select.Option>
+            </Select>
+          </Form.Item>
           <Form.Item>
             <Button
               type="primary"
