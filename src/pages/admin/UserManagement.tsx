@@ -44,7 +44,6 @@ const UserManagement = () => {
     try {
       await updateUserRole({ userId, role: newRole }).unwrap();
       message?.success("Role updated successfully");
-      // Refresh the user list here if needed
     } catch (error) {
       message?.error("Failed to update role");
     }

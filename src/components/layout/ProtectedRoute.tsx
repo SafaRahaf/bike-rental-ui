@@ -1,57 +1,50 @@
-// import { Navigate } from "react-router-dom";
-// import { useSelector } from "react-redux";
-
-// const ProtectedRoute = ({ children, allowedRoles }) => {
-//   const user = useSelector((state) => state.auth.user);
-
-//   if (!user) {
-//     return <Navigate to="/login" />;
-//   }
-
-//   if (!allowedRoles.includes(user.role)) {
-//     return <Navigate to="/unauthorized" />;
-//   }
-
-//   return children;
-// };
-
-// export default ProtectedRoute;
-
 import { ReactNode } from "react";
-import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { Navigate } from "react-router-dom";
-import { verifyToken } from "../../utils/verifyToken";
-import { logout, TUser, useCurrentToken } from "../../redux/features/authSlice";
+import {
+  TUser,
+  useCurrentToken,
+  selectCurrentUser,
+  logout,
+  setUser,
+} from "../../redux/features/authSlice";
+import { jwtDecode } from "jwt-decode";
 
 type TProtectedRoute = {
   children: ReactNode;
-  role?: string | undefined;
+  requiredRole?: string;
 };
 
-const ProtectedRoute = ({ children, role }: TProtectedRoute) => {
+const ProtectedRoute = ({ children, requiredRole }: TProtectedRoute) => {
   const token = useAppSelector(useCurrentToken);
-
-  let user;
-
-  if (token) {
-    user = verifyToken(token);
-  }
-
-  // const user = useAppSelector(selectCurrentUser);
+  const user = useAppSelector(selectCurrentUser);
   const dispatch = useAppDispatch();
 
-  if (role !== undefined && role !== (user as TUser)?.role) {
-    dispatch(logout());
-    return <Navigate to="/login" replace={true} />;
-  }
-
-  // console.log(user);
-
   if (!token) {
-    return <Navigate to="/login" replace={true} />;
+    return <Navigate to="/login" replace />;
   }
 
-  return children;
+  let verifiedUser: TUser | null = null;
+  try {
+    verifiedUser = jwtDecode<TUser>(token);
+    const now = Date.now() / 1000;
+    if (verifiedUser?.exp < now) {
+      throw new Error("Token expired");
+    }
+    if (!user) {
+      dispatch(setUser({ user: verifiedUser, token }));
+    }
+  } catch (error) {
+    dispatch(logout());
+    return <Navigate to="/login" replace />;
+  }
+
+  if (requiredRole && user?.role !== requiredRole) {
+    dispatch(logout());
+    return <Navigate to="/login" replace />;
+  }
+
+  return <>{children}</>;
 };
 
 export default ProtectedRoute;

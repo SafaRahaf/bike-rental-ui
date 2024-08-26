@@ -1,16 +1,29 @@
 import { Form, Input, Button, message } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import { useLoginMutation } from "../redux/features/auth.api";
+import { setUser } from "../redux/features/authSlice";
+import { useDispatch } from "react-redux";
 
 const Login = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [login, { isLoading }] = useLoginMutation();
 
   const onFinish = async (values: any) => {
     try {
       const response = await login(values).unwrap();
       message.success("Login successful!");
+
+      localStorage.setItem("token", response.token);
+
+      dispatch(
+        setUser({
+          user: response.data,
+          token: response.token,
+        })
+      );
+
       if (response.data.role === "admin") {
         navigate("/admin/dashboard");
       } else {
