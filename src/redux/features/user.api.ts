@@ -16,7 +16,26 @@ const userApi = baseApi.injectEndpoints({
         body: data,
       }),
     }),
+    getProfileInfo: builder.query({
+      query: (data) => ({
+        url: "/users/me",
+        method: "GET",
+        body: data,
+      }),
+    }),
+    updateProfileInfo: builder.mutation({
+      query: (data) => ({
+        url: "/users/me",
+        method: "PUT",
+        body: data,
+      }),
+    }),
   }),
 });
 
-export const { useGetBikesQuery, useGetRentalBikesQuery } = userApi;
+export const {
+  useGetBikesQuery,
+  useGetRentalBikesQuery,
+  useGetProfileInfoQuery,
+  useUpdateProfileInfoMutation,
+} = userApi;

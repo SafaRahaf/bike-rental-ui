@@ -1,25 +1,45 @@
-import React, { useState } from "react";
-import { Card, Col, Row, Button, Form, Input } from "antd";
+import { useState } from "react";
+import { Card, Col, Row, Button, Form, Input, message } from "antd";
+import {
+  useGetProfileInfoQuery,
+  useUpdateProfileInfoMutation,
+} from "../../redux/features/auth.api";
 
 const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [form] = Form.useForm();
 
+  const {
+    data: profileData,
+    isLoading,
+    error,
+  } = useGetProfileInfoQuery(undefined);
+
+  const [updateProfileInfo, { isLoading: isUpdating }] =
+    useUpdateProfileInfoMutation();
+
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>Error loading profile information.</p>;
+
+  const { name, email, phone, address, role, createdAt, updatedAt } =
+    profileData.data;
+
   const handleEdit = () => {
     setIsEditing(true);
-    form.setFieldsValue({
-      name: "John Doe",
-      email: "john.doe@example.com",
-      phone: "+1234567890",
-      address: "123 Main St, Anytown, USA",
-    });
+    form.setFieldsValue({ name, email, phone, address });
   };
 
-  const handleSave = () => {
-    form.validateFields().then((values) => {
-      console.log("Saved values:", values);
+  const handleSave = async () => {
+    try {
+      const values = await form.validateFields();
+      await updateProfileInfo(values).unwrap();
+      message.success("Profile updated successfully!");
       setIsEditing(false);
-    });
+
+      window.location.reload();
+    } catch (err) {
+      message.error("Failed to update profile. Please try again.");
+    }
   };
 
   const handleCancel = () => {
@@ -30,7 +50,7 @@ const Profile = () => {
     <Row gutter={[16, 16]} justify="center" className="p-4">
       <Col xs={24} md={12}>
         <Card className="shadow-lg">
-          <h2 className="text-2xl font-semibold mb-4 text-center">
+          <h2 className="text-2xl font-semibold mb-4 text-center text-[#72445e]">
             My Profile
           </h2>
           {!isEditing ? (
@@ -42,33 +62,35 @@ const Profile = () => {
                   className="w-32 h-32 rounded-full mx-auto"
                 />
                 <p className="text-xl font-semibold">
-                  <span className="text-gray-800">John Doe</span>
+                  <span className="text-gray-800">{name}</span>
                 </p>
                 <p className="text-lg">
                   <strong className="text-gray-600">Email:</strong>{" "}
-                  <span className="text-gray-800">john.doe@example.com</span>
+                  <span className="text-gray-800">{email}</span>
                 </p>
                 <p className="text-lg">
                   <strong className="text-gray-600">Phone:</strong>{" "}
-                  <span className="text-gray-800">+1234567890</span>
+                  <span className="text-gray-800">{phone}</span>
                 </p>
                 <p className="text-lg">
                   <strong className="text-gray-600">Address:</strong>{" "}
+                  <span className="text-gray-800">{address}</span>
+                </p>
+                <p className="text-lg">
+                  <strong className="text-gray-600">Role:</strong>{" "}
+                  <span className="text-gray-800">{role}</span>
+                </p>
+                <p className="text-lg">
+                  <strong className="text-gray-600">Joined:</strong>{" "}
                   <span className="text-gray-800">
-                    123 Main St, Anytown, USA
+                    {new Date(createdAt).toLocaleDateString()}
                   </span>
                 </p>
                 <p className="text-lg">
-                  <strong className="text-gray-600">Bikes Rented:</strong>{" "}
-                  <span className="text-gray-800">5</span>
-                </p>
-                <p className="text-lg">
-                  <strong className="text-gray-600">Total Money Spent:</strong>{" "}
-                  <span className="text-gray-800">$450</span>
-                </p>
-                <p className="text-lg">
-                  <strong className="text-gray-600">Current Bike:</strong>{" "}
-                  <span className="text-gray-800">Mountain Bike</span>
+                  <strong className="text-gray-600">Last Updated:</strong>{" "}
+                  <span className="text-gray-800">
+                    {new Date(updatedAt).toLocaleDateString()}
+                  </span>
                 </p>
 
                 <Button
@@ -122,6 +144,7 @@ const Profile = () => {
                   type="primary"
                   htmlType="submit"
                   className="bg-gradient-to-r from-pink-500 to-cyan-300 text-white px-6 py-2 rounded-lg"
+                  loading={isUpdating}
                 >
                   Save Changes
                 </Button>

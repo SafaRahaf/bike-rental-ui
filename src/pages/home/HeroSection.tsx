@@ -3,7 +3,7 @@ const HeroSection = () => {
     <div className="flex">
       <div
         className="relative w-full m-5 bg-gradient-to-r from-pink-500 to-cyan-300 rounded-md shadow-lg flex justify-center"
-        style={{ height: "80vh" }}
+        style={{ height: "60vh" }}
       >
         <video
           className="absolute top-0 left-0 w-full h-full object-cover"

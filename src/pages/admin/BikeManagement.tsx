@@ -124,7 +124,6 @@ const BikeManagement = () => {
   };
 
   const showUpdateBikeModal = (bike: any) => {
-    console.log("Bike data for update:", bike);
     setCurrentBike(bike);
     form.setFieldsValue(bike);
     setIsUpdateModalVisible(true);

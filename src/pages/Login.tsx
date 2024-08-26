@@ -39,7 +39,7 @@ const Login = () => {
       className="border shadow-lg"
       style={{ maxWidth: 600, margin: "25px auto", padding: "20px" }}
     >
-      <h2>Login</h2>
+      <h2 className="text-center font-semibold text-[#72445e]">Login</h2>
       <Form
         form={form}
         layout="vertical"
@@ -69,7 +69,11 @@ const Login = () => {
         </Form.Item>
         <div className="flex justify-between">
           <Form.Item>
-            <Button type="primary" htmlType="submit" loading={isLoading}>
+            <Button
+              className="bg-cyan-600 text-white"
+              htmlType="submit"
+              loading={isLoading}
+            >
               Login
             </Button>
           </Form.Item>
