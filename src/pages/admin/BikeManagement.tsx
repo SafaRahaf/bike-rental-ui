@@ -17,8 +17,10 @@ import {
   useUpdateBikesMutation,
 } from "../../redux/features/admin.api";
 import { useGetBikesQuery } from "../../redux/features/user.api";
+import { useNavigate } from "react-router-dom";
 
 const BikeManagement = () => {
+  const navigate = useNavigate();
   const [form] = Form.useForm();
   const [bikes, setBikes] = useState([]);
   const [filteredBikes, setFilteredBikes] = useState([]);
@@ -83,6 +85,7 @@ const BikeManagement = () => {
     } catch (error) {
       message.error("Failed to add bike. Please try again.");
     }
+    navigate("/admin/bikeManagement");
   };
 
   const handleUpdateBike = async (values: any) => {
@@ -131,7 +134,7 @@ const BikeManagement = () => {
     {
       title: "Brand",
       dataIndex: "brand",
-      key: "brand",
+      key: "brands",
     },
     {
       title: "Model",

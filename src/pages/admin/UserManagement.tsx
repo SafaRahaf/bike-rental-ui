@@ -1,31 +1,31 @@
 import { useState, useEffect } from "react";
 import { Table, Button, Input, Space, Select, Card } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-
-const sampleUsers = [
-  { id: 1, name: "John Doe", email: "john@example.com", role: "Admin" },
-  { id: 2, name: "Jane Smith", email: "jane@example.com", role: "User" },
-];
+import {
+  useGetAllUsersQuery,
+  useUpdateUserRoleMutation,
+} from "../../redux/features/admin.api";
 
 const UserManagement = () => {
-  const [users, setUsers] = useState(sampleUsers);
-  const [filteredUsers, setFilteredUsers] = useState(sampleUsers);
+  const [users, setUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [roleFilter, setRoleFilter] = useState<string | undefined>(undefined);
 
+  const { data: usersInfoData } = useGetAllUsersQuery(undefined);
+
+  const [updateUserRole] = useUpdateUserRoleMutation();
+
   useEffect(() => {
-    setUsers(sampleUsers);
-    setFilteredUsers(sampleUsers);
-  }, []);
+    if (usersInfoData?.data) {
+      setUsers(usersInfoData.data);
+      setFilteredUsers(usersInfoData.data);
+    }
+  }, [usersInfoData]);
 
   const handleSearch = (value: string) => {
     setSearchText(value);
     filterUsers(value, roleFilter);
-  };
-
-  const handleRoleChange = (value: string | undefined) => {
-    setRoleFilter(value);
-    filterUsers(searchText, value);
   };
 
   const filterUsers = (text: string, role: string | undefined) => {
@@ -38,6 +38,16 @@ const UserManagement = () => {
       filtered = filtered.filter((user) => user.role === role);
     }
     setFilteredUsers(filtered);
+  };
+
+  const handleRoleChange = async (userId: string, newRole: string) => {
+    try {
+      await updateUserRole({ userId, role: newRole }).unwrap();
+      message?.success("Role updated successfully");
+      // Refresh the user list here if needed
+    } catch (error) {
+      message?.error("Failed to update role");
+    }
   };
 
   const columns = [
@@ -61,15 +71,16 @@ const UserManagement = () => {
       key: "actions",
       render: (_: any, record: any) => (
         <Space size="middle">
+          <Select
+            defaultValue={record.role}
+            onChange={(value) => handleRoleChange(record._id, value)}
+          >
+            <Select.Option value="user">User</Select.Option>
+            <Select.Option value="admin">Admin</Select.Option>
+          </Select>
           <Button
             className="bg-gradient-to-r from-pink-500 to-cyan-300 text-white"
-            onClick={() => handleUpdate(record.id)}
-          >
-            Update
-          </Button>
-          <Button
-            className="bg-gradient-to-r to-pink-500 from-cyan-300 text-white"
-            onClick={() => handleDelete(record.id)}
+            onClick={() => handleDelete(record._id)}
           >
             Delete
           </Button>
@@ -78,16 +89,16 @@ const UserManagement = () => {
     },
   ];
 
-  const handleUpdate = (id: number) => {
-    // Handle update logic
-    console.log("Update user with id:", id);
-  };
-
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: string) => {
     // Handle delete logic
     console.log("Delete user with id:", id);
-    setUsers(users.filter((user) => user.id !== id));
+    setUsers(users.filter((user) => user._id !== id));
     filterUsers(searchText, roleFilter);
+  };
+
+  const getUniqueRoles = () => {
+    const roles = users.map((user) => user.role);
+    return Array.from(new Set(roles));
   };
 
   return (
@@ -111,16 +122,17 @@ const UserManagement = () => {
             onChange={handleRoleChange}
             allowClear
           >
-            {/* Add your filter options here */}
-            <Select.Option value="Admin">Admin</Select.Option>
-            <Select.Option value="User">User</Select.Option>
-            {/* Add more roles here */}
+            {getUniqueRoles().map((role) => (
+              <Select.Option key={role} value={role}>
+                {role}
+              </Select.Option>
+            ))}
           </Select>
         </div>
         <Table
           columns={columns}
           dataSource={filteredUsers}
-          rowKey="id"
+          rowKey="_id"
           pagination={{ pageSize: 10 }}
           bordered
         />

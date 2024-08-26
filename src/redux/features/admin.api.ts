@@ -22,6 +22,20 @@ const userApi = baseApi.injectEndpoints({
         body: data,
       }),
     }),
+    getAllUsers: builder.query({
+      query: (data) => ({
+        url: `/users`,
+        method: "GET",
+        body: data,
+      }),
+    }),
+    updateUserRole: builder.mutation({
+      query: ({ userId, role }) => ({
+        url: `/users/role/${userId}`,
+        method: "PUT",
+        body: { role },
+      }),
+    }),
   }),
 });
 
@@ -29,4 +43,6 @@ export const {
   useAddBikesMutation,
   useDeleteBikesMutation,
   useUpdateBikesMutation,
+  useGetAllUsersQuery,
+  useUpdateUserRoleMutation,
 } = userApi;
