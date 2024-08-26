@@ -11,7 +11,11 @@ import {
   message,
 } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-import { useAddBikesMutation } from "../../redux/features/admin.api";
+import {
+  useAddBikesMutation,
+  useDeleteBikesMutation,
+  useUpdateBikesMutation,
+} from "../../redux/features/admin.api";
 import { useGetBikesQuery } from "../../redux/features/user.api";
 
 const BikeManagement = () => {
@@ -20,7 +24,9 @@ const BikeManagement = () => {
   const [filteredBikes, setFilteredBikes] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [brandFilter, setBrandFilter] = useState<string | undefined>(undefined);
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isAddModalVisible, setIsAddModalVisible] = useState(false);
+  const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
+  const [currentBike, setCurrentBike] = useState(null);
   const {
     data: bikeData,
     refetch,
@@ -28,6 +34,8 @@ const BikeManagement = () => {
     error,
   } = useGetBikesQuery(undefined);
   const [addBike, { isLoading: isAdding }] = useAddBikesMutation();
+  const [deleteBike] = useDeleteBikesMutation();
+  const [updateBike] = useUpdateBikesMutation();
 
   useEffect(() => {
     if (bikeData && Array.isArray(bikeData.data)) {
@@ -59,7 +67,6 @@ const BikeManagement = () => {
   };
 
   const handleAddBike = async (values: any) => {
-    // Parse numerical values
     const bikeData = {
       ...values,
       pricePerHour: parseFloat(values.pricePerHour),
@@ -71,11 +78,53 @@ const BikeManagement = () => {
       await addBike(bikeData).unwrap();
       message.success("Bike added successfully!");
       refetch();
-      setIsModalVisible(false);
+      setIsAddModalVisible(false);
       form.resetFields();
     } catch (error) {
       message.error("Failed to add bike. Please try again.");
     }
+  };
+
+  const handleUpdateBike = async (values: any) => {
+    if (!currentBike?._id) {
+      message.error("Bike ID is missing.");
+      return;
+    }
+
+    const bikeData = {
+      ...values,
+      pricePerHour: parseFloat(values.pricePerHour),
+      cc: parseInt(values.cc, 10),
+      year: parseInt(values.year, 10),
+    };
+
+    try {
+      await updateBike({ id: currentBike._id, data: bikeData }).unwrap();
+      message.success("Bike updated successfully!");
+      refetch();
+      setIsUpdateModalVisible(false);
+      setCurrentBike(null);
+    } catch (error) {
+      message.error("Failed to update bike. Please try again.");
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteBike(id).unwrap();
+      message.success("Bike deleted successfully!");
+      setBikes(bikes.filter((bike) => bike._id !== id));
+      filterBikes(searchText, brandFilter);
+    } catch (error) {
+      message.error("Failed to delete bike. Please try again.");
+    }
+  };
+
+  const showUpdateBikeModal = (bike: any) => {
+    console.log("Bike data for update:", bike);
+    setCurrentBike(bike);
+    form.setFieldsValue(bike);
+    setIsUpdateModalVisible(true);
   };
 
   const columns = [
@@ -106,7 +155,7 @@ const BikeManagement = () => {
         <Space size="middle">
           <Button
             className="bg-gradient-to-r to-pink-500 from-cyan-300 text-white"
-            onClick={() => handleUpdate(record._id)}
+            onClick={() => showUpdateBikeModal(record)}
           >
             Update
           </Button>
@@ -121,22 +170,22 @@ const BikeManagement = () => {
     },
   ];
 
-  const handleUpdate = (id: string) => {
-    console.log("Update bike with id:", id);
-  };
-
-  const handleDelete = (id: string) => {
-    console.log("Delete bike with id:", id);
-    setBikes(bikes.filter((bike) => bike._id !== id));
-    filterBikes(searchText, brandFilter);
-  };
-
   const showAddBikeModal = () => {
-    setIsModalVisible(true);
+    setIsAddModalVisible(true);
   };
 
-  const handleCancel = () => {
-    setIsModalVisible(false);
+  const handleCancelAdd = () => {
+    setIsAddModalVisible(false);
+  };
+
+  const handleCancelUpdate = () => {
+    setIsUpdateModalVisible(false);
+    setCurrentBike(null);
+  };
+
+  const getUniqueBrands = () => {
+    const brands = bikes.map((bike) => bike.brand);
+    return Array.from(new Set(brands));
   };
 
   if (isLoading) return <p>Loading bikes...</p>;
@@ -164,8 +213,11 @@ const BikeManagement = () => {
               onChange={handleBrandChange}
               allowClear
             >
-              <Select.Option value="Honda">Honda</Select.Option>
-              <Select.Option value="Yamaha">Yamaha</Select.Option>
+              {getUniqueBrands().map((brand) => (
+                <Select.Option key={brand} value={brand}>
+                  {brand}
+                </Select.Option>
+              ))}
             </Select>
           </div>
           <div>
@@ -173,7 +225,7 @@ const BikeManagement = () => {
               className="bg-[#72445e] text-white mr-1"
               onClick={showAddBikeModal}
             >
-              Add bikes
+              Add Bike
             </Button>
           </div>
         </div>
@@ -188,8 +240,8 @@ const BikeManagement = () => {
 
       <Modal
         title="Add New Bike"
-        visible={isModalVisible}
-        onCancel={handleCancel}
+        visible={isAddModalVisible}
+        onCancel={handleCancelAdd}
         footer={null}
       >
         <Form form={form} layout="vertical" onFinish={handleAddBike}>
@@ -214,38 +266,21 @@ const BikeManagement = () => {
             label="Price Per Hour"
             rules={[{ required: true, message: "Please enter price per hour" }]}
           >
-            <Input
-              type="number"
-              onChange={(e) =>
-                form.setFieldsValue({
-                  pricePerHour: parseFloat(e.target.value),
-                })
-              }
-            />
+            <Input type="number" />
           </Form.Item>
           <Form.Item
             name="cc"
             label="CC"
             rules={[{ required: true, message: "Please enter bike CC" }]}
           >
-            <Input
-              type="number"
-              onChange={(e) =>
-                form.setFieldsValue({ cc: parseInt(e.target.value, 10) })
-              }
-            />
+            <Input type="number" />
           </Form.Item>
           <Form.Item
             name="year"
             label="Year"
             rules={[{ required: true, message: "Please enter bike year" }]}
           >
-            <Input
-              type="number"
-              onChange={(e) =>
-                form.setFieldsValue({ year: parseInt(e.target.value, 10) })
-              }
-            />
+            <Input type="number" />
           </Form.Item>
           <Form.Item
             name="model"
@@ -279,6 +314,87 @@ const BikeManagement = () => {
               className="bg-[#72445e]"
             >
               Add Bike
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
+
+      <Modal
+        title="Update Bike"
+        visible={isUpdateModalVisible}
+        onCancel={handleCancelUpdate}
+        footer={null}
+      >
+        <Form form={form} layout="vertical" onFinish={handleUpdateBike}>
+          <Form.Item
+            name="name"
+            label="Name"
+            rules={[{ required: true, message: "Please enter bike name" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="description"
+            label="Description"
+            rules={[
+              { required: true, message: "Please enter bike description" },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="pricePerHour"
+            label="Price Per Hour"
+            rules={[{ required: true, message: "Please enter price per hour" }]}
+          >
+            <Input type="number" />
+          </Form.Item>
+          <Form.Item
+            name="cc"
+            label="CC"
+            rules={[{ required: true, message: "Please enter bike CC" }]}
+          >
+            <Input type="number" />
+          </Form.Item>
+          <Form.Item
+            name="year"
+            label="Year"
+            rules={[{ required: true, message: "Please enter bike year" }]}
+          >
+            <Input type="number" />
+          </Form.Item>
+          <Form.Item
+            name="model"
+            label="Model"
+            rules={[{ required: true, message: "Please enter bike model" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="brand"
+            label="Brand"
+            rules={[{ required: true, message: "Please enter bike brand" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="isAvailable"
+            label="Availability"
+            rules={[{ required: true, message: "Please select availability" }]}
+          >
+            <Select>
+              <Select.Option value={true}>Available</Select.Option>
+              <Select.Option value={false}>Not Available</Select.Option>
+            </Select>
+          </Form.Item>
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={isAdding}
+              className="bg-[#72445e]"
+            >
+              Update Bike
             </Button>
           </Form.Item>
         </Form>

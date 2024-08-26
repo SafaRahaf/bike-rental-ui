@@ -9,7 +9,24 @@ const userApi = baseApi.injectEndpoints({
         body: data,
       }),
     }),
+    deleteBikes: builder.mutation({
+      query: (id) => ({
+        url: `/bikes/${id}`,
+        method: "DELETE",
+      }),
+    }),
+    updateBikes: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/bikes/${id}`,
+        method: "PUT",
+        body: data,
+      }),
+    }),
   }),
 });
 
-export const { useAddBikesMutation } = userApi;
+export const {
+  useAddBikesMutation,
+  useDeleteBikesMutation,
+  useUpdateBikesMutation,
+} = userApi;
