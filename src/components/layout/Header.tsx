@@ -6,6 +6,7 @@ import { SecondColor } from "../helpers/DefaultStyles";
 import { useAppDispatch } from "../../redux/hooks";
 import { logout } from "../../redux/features/authSlice";
 import { useLoginMutation } from "../../redux/features/auth.api";
+import { UserOutlined } from "@ant-design/icons";
 
 const { Header } = Layout;
 const { Title } = Typography;
@@ -61,7 +62,7 @@ const AppHeader = () => {
       key: "profile",
       label: (
         <Link className="text-white" to="/user/profile">
-          🙍🏻‍♂️
+          <UserOutlined />
         </Link>
       ),
     },
@@ -109,7 +110,7 @@ const AppHeader = () => {
       key: "profile",
       label: (
         <Link className="text-white" to="/admin/profile">
-          🙍🏻‍♂️
+          <UserOutlined />
         </Link>
       ),
     },
