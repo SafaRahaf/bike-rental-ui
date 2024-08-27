@@ -1,13 +1,15 @@
-import { Button, Card, Col, Row, Modal } from "antd";
+import { Button, Card, Col, Row, Modal, message } from "antd";
 import { useState } from "react";
 import { useGetBikesQuery } from "../../redux/features/user.api";
 import Loading from "../../components/layout/Loading";
+import { useCreateRentalMutation } from "../../redux/features/user.api";
 
 const FeaturedSection = () => {
   const { data: bikes, isLoading, error } = useGetBikesQuery(undefined);
   const [visibleCount, setVisibleCount] = useState(4);
   const [selectedBike, setSelectedBike] = useState<any>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [createRental] = useCreateRentalMutation();
 
   if (isLoading) {
     return <Loading />;
@@ -37,8 +39,14 @@ const FeaturedSection = () => {
     setSelectedBike(null);
   };
 
-  const handleBookNow = (bike: any) => {
-    console.log("Booking bike:", bike);
+  const handleBookNow = async (bike: any) => {
+    try {
+      await createRental({ bikeId: bike._id, startTime: new Date() }).unwrap();
+      message.success("Bike booked successfully! It is now marked as unPaid.");
+    } catch (error) {
+      console.error("Error booking bike:", error);
+      message.error("Failed to book the bike. Please try again.");
+    }
   };
 
   return (

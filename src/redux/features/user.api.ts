@@ -16,7 +16,18 @@ const userApi = baseApi.injectEndpoints({
         body: data,
       }),
     }),
+    createRental: builder.mutation({
+      query: (data) => ({
+        url: "/rentals",
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
-export const { useGetBikesQuery, useGetRentalBikesQuery } = userApi;
+export const {
+  useGetBikesQuery,
+  useGetRentalBikesQuery,
+  useCreateRentalMutation,
+} = userApi;
