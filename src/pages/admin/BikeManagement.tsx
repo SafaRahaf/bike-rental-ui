@@ -40,6 +40,8 @@ const BikeManagement = () => {
   const [deleteBike] = useDeleteBikesMutation();
   const [updateBike] = useUpdateBikesMutation();
 
+  console.log(bikeData);
+
   useEffect(() => {
     if (bikeData && Array.isArray(bikeData.data)) {
       setBikes(bikeData.data);
@@ -237,6 +239,7 @@ const BikeManagement = () => {
           dataSource={filteredBikes}
           rowKey="_id"
           pagination={{ pageSize: 10 }}
+          scroll={{ x: 600 }}
           bordered
         />
       </Card>

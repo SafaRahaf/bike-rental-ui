@@ -5,6 +5,7 @@ import Register from "../pages/Register";
 import ProtectedRoute from "../components/layout/ProtectedRoute";
 import { adminPaths } from "./adminRoutes";
 import { userPaths } from "./userRoutes";
+import NotFound from "../pages/NotFound";
 
 const router = createBrowserRouter([
   {
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
         children: userPaths,
       },
     ],
+  },
+  {
+    path: "*",
+    element: <NotFound />,
   },
   {
     path: "/login",

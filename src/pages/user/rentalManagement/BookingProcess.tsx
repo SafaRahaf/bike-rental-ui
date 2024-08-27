@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { Modal, Button, Form, DatePicker, message } from "antd";
+import { useCreateRentalMutation } from "../../../redux/features/user.api";
 
 const BookingProcess = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [createRental, { isLoading }] = useCreateRentalMutation();
 
   const handleBookNow = () => {
     setIsModalOpen(true);
@@ -12,37 +14,53 @@ const BookingProcess = () => {
     setIsModalOpen(false);
   };
 
-  const handlePayment = () => {
-    message.success("Payment successful! Booking confirmed.");
-    setIsModalOpen(false);
+  const handlePayment = async () => {
+    try {
+      const rentalData = {
+        bikeId: "actualBikeId",
+        startTime: new Date().toISOString(),
+      };
+      await createRental(rentalData).unwrap();
+      message.success("Booking confirmed and payment successful!");
+      setIsModalOpen(false);
+    } catch (error) {
+      message.error("Booking failed. Please try again.");
+    }
   };
 
   return (
-    <div>
-      <Button className="bg-[#72445e] text-white" onClick={handleBookNow}>
+    <>
+      <Button
+        className="bg-gradient-to-r to-pink-500 from-cyan-300 text-white"
+        onClick={handleBookNow}
+      >
         Book Now
       </Button>
       <Modal
-        title="Booking Process"
-        visible={isModalOpen}
+        title="Booking Confirmation"
+        open={isModalOpen}
         onCancel={handleCancel}
-        footer={null}
+        footer={[
+          <Button key="back" onClick={handleCancel}>
+            Cancel
+          </Button>,
+          <Button
+            key="submit"
+            type="primary"
+            loading={isLoading}
+            onClick={handlePayment}
+          >
+            Confirm Booking
+          </Button>,
+        ]}
       >
-        <Form layout="vertical">
+        <Form>
           <Form.Item label="Start Time">
             <DatePicker showTime />
           </Form.Item>
-          <Form.Item>
-            <Button
-              className="bg-gradient-to-r from-pink-500 to-cyan-300"
-              onClick={handlePayment}
-            >
-              Pay Tk 100
-            </Button>
-          </Form.Item>
         </Form>
       </Modal>
-    </div>
+    </>
   );
 };
 

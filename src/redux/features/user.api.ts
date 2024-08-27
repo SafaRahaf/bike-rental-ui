@@ -23,6 +23,13 @@ const userApi = baseApi.injectEndpoints({
         body: data,
       }),
     }),
+    updateRentalStatus: builder.mutation({
+      query: ({ id, status }) => ({
+        url: `/rentals/${id}`,
+        method: "PATCH",
+        body: { isReturned: status },
+      }),
+    }),
   }),
 });
 
@@ -30,4 +37,5 @@ export const {
   useGetBikesQuery,
   useGetRentalBikesQuery,
   useCreateRentalMutation,
+  useUpdateRentalStatusMutation,
 } = userApi;

@@ -1,7 +1,6 @@
 import { Card, Col, Row, Rate } from "antd";
-import React from "react";
+import { ImgR1, ImgR2, ImgR3, ImgR4, ImgR5, ImgR6 } from "../../assets/reviews";
 
-// Example reviews data
 const reviews = [
   {
     id: 1,
@@ -9,7 +8,7 @@ const reviews = [
     rating: 5,
     review:
       "Fantastic experience! The bikes were in great condition and the service was excellent.",
-    imageUrl: "path-to-customer-image-1.jpg",
+    imageUrl: ImgR1,
   },
   {
     id: 2,
@@ -17,7 +16,7 @@ const reviews = [
     rating: 4,
     review:
       "Good selection of bikes. The rental process was smooth, but the return process could be improved.",
-    imageUrl: "path-to-customer-image-2.jpg",
+    imageUrl: ImgR2,
   },
   {
     id: 3,
@@ -25,7 +24,7 @@ const reviews = [
     rating: 5,
     review:
       "Loved the electric bike! It made my commute so much easier. Highly recommend.",
-    imageUrl: "path-to-customer-image-3.jpg",
+    imageUrl: ImgR3,
   },
   {
     id: 4,
@@ -33,23 +32,23 @@ const reviews = [
     rating: 3,
     review:
       "The bike was okay, but the service was not as good as expected. There was a delay in pickup.",
-    imageUrl: "path-to-customer-image-4.jpg",
+    imageUrl: ImgR4,
   },
   {
     id: 5,
-    name: "sara niyan",
+    name: "Sara Niyan",
     rating: 4,
     review:
       "The bike was okay, but the service was not as good as expected. There was a delay in pickup.",
-    imageUrl: "path-to-customer-image-4.jpg",
+    imageUrl: ImgR5,
   },
   {
     id: 6,
-    name: "noah raj",
+    name: "Noah Raj",
     rating: 2,
     review:
       "The bike was okay, but the service was not as good as expected. There was a delay in pickup.",
-    imageUrl: "path-to-customer-image-4.jpg",
+    imageUrl: ImgR6,
   },
 ];
 
@@ -60,28 +59,28 @@ const Reviews = () => {
         <h2 className="text-3xl font-bold text-center mb-8 text-[#72445e]">
           Customer Reviews
         </h2>
-        <Row gutter={16}>
+        <Row gutter={16} justify="center">
           {reviews.map((review) => (
-            <Col xs={24} sm={12} md={8} key={review.id} className="mb-4 ">
+            <Col xs={24} sm={12} md={8} lg={4} key={review.id} className="mb-4">
               <Card
-                className="flex items-start bg-gradient-to-r to-pink-500 from-cyan-300 text-white"
+                className="bg-gradient-to-r from-pink-500 to-cyan-300 text-white p-4 flex flex-col items-center"
                 cover={
                   <img
                     alt={review.name}
                     src={review.imageUrl}
-                    className="w-16 h-16 object-cover rounded-full"
+                    className="w-24 h-24 object-cover rounded-full mb-4"
                   />
                 }
               >
                 <Card.Meta
                   title={
-                    <div className="flex items-center text-white">
+                    <div className="flex flex-col items-center">
                       <h3 className="text-lg font-semibold">{review.name}</h3>
-                      <Rate disabled value={review.rating} className="ml-2" />
+                      <Rate disabled value={review.rating} className="mt-1" />
                     </div>
                   }
                   description={
-                    <div className="text-white">{review.review}</div>
+                    <div className="text-center mt-2">{review.review}</div>
                   }
                 />
               </Card>

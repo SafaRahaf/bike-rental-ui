@@ -1,27 +1,29 @@
 import { Card } from "antd";
 import { UserOutlined } from "@ant-design/icons";
+import Img1 from "../../assets/team/pexels-edmond-dantes-4342401.jpg";
+import Img2 from "../../assets/team/pexels-katerina-holmes-5905897.jpg";
+import Img3 from "../../assets/team/pexels-olly-3763188.jpg";
 
-// Sample team data
 const teamMembers = [
   {
     id: 1,
-    name: "John Doe",
+    name: "Joseph khan",
     role: "CEO & Founder",
-    imgSrc: "path-to-image1.jpg",
+    imgSrc: Img1,
     bio: "John is the visionary behind our company, committed to providing the best biking experience.",
   },
   {
     id: 2,
-    name: "Jane Smith",
+    name: "Rihanna maki",
     role: "Marketing Director",
-    imgSrc: "path-to-image2.jpg",
+    imgSrc: Img2,
     bio: "Jane leads our marketing efforts, ensuring that our message reaches the right audience.",
   },
   {
     id: 3,
-    name: "Emily Johnson",
+    name: "Jenna Blackly",
     role: "Customer Service Manager",
-    imgSrc: "path-to-image3.jpg",
+    imgSrc: Img3,
     bio: "Emily is dedicated to ensuring that our customers have the best possible experience with our services.",
   },
 ];

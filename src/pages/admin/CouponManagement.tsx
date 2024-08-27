@@ -119,7 +119,12 @@ const CouponManagement = () => {
       >
         Add Coupon
       </Button>
-      <Table columns={columns} dataSource={coupons} rowKey="key" />
+      <Table
+        columns={columns}
+        scroll={{ x: 600 }}
+        dataSource={coupons}
+        rowKey="key"
+      />
 
       <Modal
         title={currentCoupon ? "Edit Coupon" : "Add Coupon"}

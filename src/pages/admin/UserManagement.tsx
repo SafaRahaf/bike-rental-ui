@@ -133,6 +133,7 @@ const UserManagement = () => {
           dataSource={filteredUsers}
           rowKey="_id"
           pagination={{ pageSize: 10 }}
+          scroll={{ x: 600 }}
           bordered
         />
       </Card>
