@@ -4,6 +4,7 @@ import {
   useGetProfileInfoQuery,
   useUpdateProfileInfoMutation,
 } from "../../redux/features/auth.api";
+import Loading from "../../components/layout/Loading";
 
 const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -18,7 +19,7 @@ const Profile = () => {
   const [updateProfileInfo, { isLoading: isUpdating }] =
     useUpdateProfileInfoMutation();
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <Loading />;
   if (error) return <p>Error loading profile information.</p>;
 
   const { name, email, phone, address, role, createdAt, updatedAt } =

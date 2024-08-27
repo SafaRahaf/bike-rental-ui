@@ -10,6 +10,11 @@ const Login = () => {
   const dispatch = useDispatch();
   const [login, { isLoading }] = useLoginMutation();
 
+  const defaultAdmin = {
+    email: "admin@example.com",
+    password: "admin123",
+  };
+
   const onFinish = async (values: any) => {
     try {
       const response = await login(values).unwrap();
@@ -44,7 +49,7 @@ const Login = () => {
         form={form}
         layout="vertical"
         onFinish={onFinish}
-        initialValues={{ remember: true }}
+        initialValues={defaultAdmin}
       >
         <Form.Item
           label="Email"

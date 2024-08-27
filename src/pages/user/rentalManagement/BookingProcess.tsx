@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Modal, Button, Form, Input, DatePicker, message } from "antd";
+import { Modal, Button, Form, DatePicker, message } from "antd";
 
 const BookingProcess = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -14,7 +14,6 @@ const BookingProcess = () => {
 
   const handlePayment = () => {
     message.success("Payment successful! Booking confirmed.");
-    // Here you would update the bike availability and close the modal
     setIsModalOpen(false);
   };
 

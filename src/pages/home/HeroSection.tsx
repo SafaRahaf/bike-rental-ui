@@ -7,7 +7,7 @@ const HeroSection = () => {
       <div
         className="
         relative w-full m-5 rounded-md shadow-lg flex justify-center"
-        style={{ height: "60vh" }}
+        style={{ height: "70vh" }}
       >
         <img src={HeroImage} alt="" className="w-full" />
 

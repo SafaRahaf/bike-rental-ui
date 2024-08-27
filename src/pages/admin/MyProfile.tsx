@@ -4,6 +4,7 @@ import {
   useGetProfileInfoQuery,
   useUpdateProfileInfoMutation,
 } from "../../redux/features/auth.api";
+import Loading from "../../components/layout/Loading";
 
 const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -17,8 +18,7 @@ const Profile = () => {
   const [updateProfileInfo, { isLoading: isUpdating }] =
     useUpdateProfileInfoMutation();
 
-  if (isLoading)
-    return <Spin size="large" className="flex justify-center mt-20" />;
+  if (isLoading) return <Loading />;
   if (error)
     return (
       <p className="text-center text-red-500">

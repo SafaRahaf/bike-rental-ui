@@ -18,6 +18,7 @@ import {
 } from "../../redux/features/admin.api";
 import { useGetBikesQuery } from "../../redux/features/user.api";
 import { useNavigate } from "react-router-dom";
+import Loading from "../../components/layout/Loading";
 
 const BikeManagement = () => {
   const navigate = useNavigate();
@@ -190,7 +191,7 @@ const BikeManagement = () => {
     return Array.from(new Set(brands));
   };
 
-  if (isLoading) return <p>Loading bikes...</p>;
+  if (isLoading) return <Loading />;
   if (error) return <p>Error loading bikes.</p>;
 
   return (

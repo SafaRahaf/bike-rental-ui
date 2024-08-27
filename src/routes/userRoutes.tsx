@@ -1,4 +1,4 @@
-import BikeManagement from "../pages/user/bikeManagement/BikeManagement";
+import BikeManagement from "../pages/user/BikeManagement";
 import RentalMenagement from "../pages/user/rentalManagement/RentalMenagement";
 import Profile from "../pages/user/Profile";
 import { About } from "../pages/aboutUs";
