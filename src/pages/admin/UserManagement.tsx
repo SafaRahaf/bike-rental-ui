@@ -113,6 +113,7 @@ const UserManagement = () => {
             value={searchText}
             onChange={(e) => handleSearch(e.target.value)}
             prefix={<SearchOutlined />}
+            className="mb-3"
             style={{ width: 300, marginRight: 16 }}
           />
           <Select

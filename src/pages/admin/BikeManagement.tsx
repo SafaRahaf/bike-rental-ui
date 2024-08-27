@@ -203,37 +203,46 @@ const BikeManagement = () => {
         bordered={false}
         style={{ marginBottom: 20 }}
       >
-        <div style={{ marginBottom: 16 }} className="flex justify-between">
-          <div>
-            <Input
-              placeholder="Search by brand or model"
-              value={searchText}
-              onChange={(e) => handleSearch(e.target.value)}
-              prefix={<SearchOutlined />}
-              style={{ width: 300, marginRight: 16 }}
-            />
-            <Select
-              placeholder="Filter by brand"
-              style={{ width: 200 }}
-              onChange={handleBrandChange}
-              allowClear
-            >
-              {getUniqueBrands().map((brand) => (
-                <Select.Option key={brand} value={brand}>
-                  {brand}
-                </Select.Option>
-              ))}
-            </Select>
+        <div
+          style={{ marginBottom: 16 }}
+          className="flex flex-wrap justify-between gap-4"
+        >
+          {" "}
+          <div className="flex flex-wrap gap-4">
+            <div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/2">
+              <Input
+                placeholder="Search by brand or model"
+                value={searchText}
+                onChange={(e) => handleSearch(e.target.value)}
+                prefix={<SearchOutlined />}
+                className="w-full"
+              />
+            </div>
+            <div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4">
+              <Select
+                placeholder="Filter by brand"
+                className="w-full"
+                onChange={handleBrandChange}
+                allowClear
+              >
+                {getUniqueBrands().map((brand) => (
+                  <Select.Option key={brand} value={brand}>
+                    {brand}
+                  </Select.Option>
+                ))}
+              </Select>
+            </div>
           </div>
-          <div>
+          <div className="flex justify-end">
             <Button
-              className="bg-[#72445e] text-white mr-1"
+              className="bg-[#72445e] text-white"
               onClick={showAddBikeModal}
             >
               Add Bike
             </Button>
           </div>
         </div>
+
         <Table
           columns={columns}
           dataSource={filteredBikes}
