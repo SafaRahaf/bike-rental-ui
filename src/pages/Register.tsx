@@ -17,7 +17,7 @@ const Register = () => {
       message.success("Registration successful!");
       navigate("/user");
     } catch (error) {
-      message.error(error.data?.message || "Registration failed");
+      message.error(error?.data?.message || "Registration failed");
     }
   };
 

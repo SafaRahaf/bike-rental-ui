@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "./Spinner.css";
 
 const options = ["10%", "20%", "30%", "40%", "50%"];
