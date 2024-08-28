@@ -5,6 +5,7 @@ import {
   useGetAllUsersQuery,
   useUpdateUserRoleMutation,
 } from "../../redux/features/admin.api";
+import { useDeleteUserMutation } from "../../redux/features/auth.api";
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
@@ -13,6 +14,8 @@ const UserManagement = () => {
   const [roleFilter, setRoleFilter] = useState<string | undefined>(undefined);
 
   const { data: usersInfoData } = useGetAllUsersQuery(undefined);
+
+  const [deleteUser] = useDeleteUserMutation();
 
   const [updateUserRole] = useUpdateUserRoleMutation();
 
@@ -46,6 +49,17 @@ const UserManagement = () => {
       message?.success("Role updated successfully");
     } catch (error) {
       message?.error("Failed to update role");
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteUser(id).unwrap();
+      message?.success("User deleted successfully");
+      setUsers(users.filter((user) => user?._id !== id));
+      filterUsers(searchText, roleFilter);
+    } catch (error) {
+      message?.error("Failed to delete user");
     }
   };
 
@@ -88,18 +102,6 @@ const UserManagement = () => {
     },
   ];
 
-  const handleDelete = (id: string) => {
-    // Handle delete logic
-    console.log("Delete user with id:", id);
-    setUsers(users.filter((user) => user._id !== id));
-    filterUsers(searchText, roleFilter);
-  };
-
-  const getUniqueRoles = () => {
-    const roles = users.map((user) => user.role);
-    return Array.from(new Set(roles));
-  };
-
   return (
     <div className="p-6">
       <Card
@@ -116,18 +118,6 @@ const UserManagement = () => {
             className="mb-3"
             style={{ width: 300, marginRight: 16 }}
           />
-          <Select
-            placeholder="Filter by role"
-            style={{ width: 200 }}
-            onChange={handleRoleChange}
-            allowClear
-          >
-            {getUniqueRoles().map((role) => (
-              <Select.Option key={role} value={role}>
-                {role}
-              </Select.Option>
-            ))}
-          </Select>
         </div>
         <Table
           columns={columns}

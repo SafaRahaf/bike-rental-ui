@@ -118,7 +118,7 @@ const AppHeader = () => {
         title="Menu"
         placement="right"
         onClose={() => setVisible(false)}
-        visible={visible}
+        open={visible}
         className="md:hidden"
         bodyStyle={{ backgroundColor: "#72445e" }}
       >

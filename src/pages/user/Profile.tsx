@@ -57,11 +57,12 @@ const Profile = () => {
           {!isEditing ? (
             <div>
               <div className="text-center space-y-6">
-                <img
+                <div className="w-32 h-32 rounded-full mx-auto bg-gray-400"></div>
+                {/* <img
                   src="path-to-profile-image.jpg"
                   alt="Profile"
                   className="w-32 h-32 rounded-full mx-auto"
-                />
+                /> */}
                 <p className="text-xl font-semibold">
                   <span className="text-gray-800">{name}</span>
                 </p>

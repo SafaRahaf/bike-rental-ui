@@ -68,12 +68,16 @@ const FeaturedSection = () => {
               <Card
                 hoverable
                 cover={
-                  <img
-                    alt={bike.name}
-                    src="path-to-placeholder-image.jpg"
-                    className="w-full h-40 object-cover"
-                  />
+                  <div className="bg-gray-300 text-white text-center font-medium text-5xl py-4 h-20">
+                    Img
+                  </div>
                 }
+
+                // <img
+                //   alt={bike.name}
+                //   src=""
+                //   className="w-full h-40 object-cover"
+                // />
               >
                 <Card.Meta title={bike.name} description={bike.description} />
                 <Button
@@ -110,11 +114,14 @@ const FeaturedSection = () => {
         width={600}
       >
         <div>
-          <img
+          <div className="bg-gray-300 text-white text-center font-medium text-5xl py-4 h-20">
+            Img
+          </div>
+          {/* <img
             alt={selectedBike?.name}
-            src="path-to-placeholder-image.jpg"
+            src=""
             className="w-full h-40 object-cover mb-4"
-          />
+          /> */}
           <p>
             <strong>Description:</strong> {selectedBike?.description}
           </p>

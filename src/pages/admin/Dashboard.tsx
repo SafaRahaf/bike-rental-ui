@@ -9,13 +9,11 @@ import CouponManagement from "./CouponManagement";
 const { Title } = Typography;
 
 const Dashboard = () => {
-  // Sample data
   const totalRentals = 120;
   const totalBikes = 30;
   const totalUsers = 45;
   const totalRevenue = 3200;
 
-  // Recent activities sample data
   const recentActivities = [
     { id: 1, description: "Rental booked for Bike A", date: "2024-08-24" },
     { id: 2, description: "Bike B returned", date: "2024-08-23" },

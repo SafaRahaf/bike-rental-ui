@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Modal, Button, Form, DatePicker, message } from "antd";
 import { useCreateRentalMutation } from "../../../redux/features/user.api";
 
@@ -30,10 +30,7 @@ const BookingProcess = () => {
 
   return (
     <>
-      <Button
-        className="bg-gradient-to-r to-pink-500 from-cyan-300 text-white"
-        onClick={handleBookNow}
-      >
+      <Button className="bg-cyan-500 text-white" onClick={handleBookNow}>
         Book Now
       </Button>
       <Modal

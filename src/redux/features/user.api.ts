@@ -27,7 +27,7 @@ const userApi = baseApi.injectEndpoints({
       query: ({ id, status }) => ({
         url: `/rentals/${id}`,
         method: "PATCH",
-        body: { isReturned: status },
+        body: { status },
       }),
     }),
   }),

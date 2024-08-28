@@ -40,8 +40,6 @@ const BikeManagement = () => {
   const [deleteBike] = useDeleteBikesMutation();
   const [updateBike] = useUpdateBikesMutation();
 
-  console.log(bikeData);
-
   useEffect(() => {
     if (bikeData && Array.isArray(bikeData.data)) {
       setBikes(bikeData.data);
@@ -255,7 +253,7 @@ const BikeManagement = () => {
 
       <Modal
         title="Add New Bike"
-        visible={isAddModalVisible}
+        open={isAddModalVisible}
         onCancel={handleCancelAdd}
         footer={null}
       >
@@ -336,7 +334,7 @@ const BikeManagement = () => {
 
       <Modal
         title="Update Bike"
-        visible={isUpdateModalVisible}
+        open={isUpdateModalVisible}
         onCancel={handleCancelUpdate}
         footer={null}
       >

@@ -10,21 +10,21 @@ const teamMembers = [
     name: "Joseph khan",
     role: "CEO & Founder",
     imgSrc: Img1,
-    bio: "John is the visionary behind our company, committed to providing the best biking experience.",
+    bio: "Joseph is the visionary behind our company, committed to providing the best biking experience.",
   },
   {
     id: 2,
     name: "Rihanna maki",
     role: "Marketing Director",
     imgSrc: Img2,
-    bio: "Jane leads our marketing efforts, ensuring that our message reaches the right audience.",
+    bio: "Rihanna leads our marketing efforts, ensuring that our message reaches the right audience.",
   },
   {
     id: 3,
     name: "Jenna Blackly",
     role: "Customer Service Manager",
     imgSrc: Img3,
-    bio: "Emily is dedicated to ensuring that our customers have the best possible experience with our services.",
+    bio: "Jenna is dedicated to ensuring that our customers have the best possible experience with our services.",
   },
 ];
 

@@ -128,7 +128,7 @@ const CouponManagement = () => {
 
       <Modal
         title={currentCoupon ? "Edit Coupon" : "Add Coupon"}
-        visible={isModalVisible}
+        open={isModalVisible}
         onOk={() => form.submit()}
         onCancel={handleModalCancel}
         okText={currentCoupon ? "Update" : "Add"}
