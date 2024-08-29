@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Table, Button, Input, Space, Select, Card } from "antd";
+import { Table, Button, Input, Space, Select, Card, message } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import {
   useGetAllUsersQuery,
@@ -7,16 +7,21 @@ import {
 } from "../../redux/features/admin.api";
 import { useDeleteUserMutation } from "../../redux/features/auth.api";
 
+interface User {
+  _id: string;
+  name: string;
+  email: string;
+  role: string;
+}
+
 const UserManagement = () => {
-  const [users, setUsers] = useState([]);
-  const [filteredUsers, setFilteredUsers] = useState([]);
-  const [searchText, setSearchText] = useState("");
-  const [roleFilter, setRoleFilter] = useState<string | undefined>(undefined);
+  const [users, setUsers] = useState<User[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
+  const [searchText, setSearchText] = useState<string>("");
 
   const { data: usersInfoData } = useGetAllUsersQuery(undefined);
 
   const [deleteUser] = useDeleteUserMutation();
-
   const [updateUserRole] = useUpdateUserRoleMutation();
 
   useEffect(() => {
@@ -28,38 +33,35 @@ const UserManagement = () => {
 
   const handleSearch = (value: string) => {
     setSearchText(value);
-    filterUsers(value, roleFilter);
+    filterUsers(value);
   };
 
-  const filterUsers = (text: string, role: string | undefined) => {
+  const filterUsers = (text: string) => {
     let filtered = users.filter(
       (user) =>
         user.name.toLowerCase().includes(text.toLowerCase()) ||
         user.email.toLowerCase().includes(text.toLowerCase())
     );
-    if (role) {
-      filtered = filtered.filter((user) => user.role === role);
-    }
     setFilteredUsers(filtered);
   };
 
   const handleRoleChange = async (userId: string, newRole: string) => {
     try {
       await updateUserRole({ userId, role: newRole }).unwrap();
-      message?.success("Role updated successfully");
+      message.success("Role updated successfully");
     } catch (error) {
-      message?.error("Failed to update role");
+      message.error("Failed to update role");
     }
   };
 
   const handleDelete = async (id: string) => {
     try {
       await deleteUser(id).unwrap();
-      message?.success("User deleted successfully");
-      setUsers(users.filter((user) => user?._id !== id));
-      filterUsers(searchText, roleFilter);
+      message.success("User deleted successfully");
+      setUsers(users.filter((user) => user._id !== id));
+      filterUsers(searchText);
     } catch (error) {
-      message?.error("Failed to delete user");
+      message.error("Failed to delete user");
     }
   };
 
@@ -82,7 +84,7 @@ const UserManagement = () => {
     {
       title: "Actions",
       key: "actions",
-      render: (_: any, record: any) => (
+      render: (_: any, record: User) => (
         <Space size="middle">
           <Select
             defaultValue={record.role}

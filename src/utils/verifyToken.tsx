@@ -1,8 +1,9 @@
-import jwtDecode from "jwt-decode";
+import * as jwtDecode from "jwt-decode";
 import { TUser } from "../redux/features/authSlice";
 
 export const verifyToken = (token: string) => {
   try {
+    //@ts-ignore
     const decoded = jwtDecode<TUser>(token);
     const now = Date.now() / 1000;
     if (decoded.exp < now) {

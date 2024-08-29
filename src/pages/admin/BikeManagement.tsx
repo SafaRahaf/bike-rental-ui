@@ -7,43 +7,45 @@ import {
   Select,
   Card,
   Modal,
-  Form,
   message,
 } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import {
-  useAddBikesMutation,
-  useDeleteBikesMutation,
-  useUpdateBikesMutation,
-} from "../../redux/features/admin.api";
-import { useGetBikesQuery } from "../../redux/features/user.api";
-import { useNavigate } from "react-router-dom";
+  useCreateRentalMutation,
+  useGetBikesQuery,
+} from "../../redux/features/user.api";
 import Loading from "../../components/layout/Loading";
 
+interface Bike {
+  _id: string;
+  brand: string;
+  model: string;
+  cc: number;
+  year: number;
+  description: string;
+  pricePerHour: number;
+  isAvailable: boolean;
+}
+
 const BikeManagement = () => {
-  const navigate = useNavigate();
-  const [form] = Form.useForm();
-  const [bikes, setBikes] = useState([]);
-  const [filteredBikes, setFilteredBikes] = useState([]);
-  const [searchText, setSearchText] = useState("");
+  const [bikes, setBikes] = useState<Bike[]>([]);
+  const [filteredBikes, setFilteredBikes] = useState<Bike[]>([]);
+  const [searchText, setSearchText] = useState<string>("");
   const [brandFilter, setBrandFilter] = useState<string | undefined>(undefined);
-  const [isAddModalVisible, setIsAddModalVisible] = useState(false);
-  const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
-  const [currentBike, setCurrentBike] = useState(null);
-  const {
-    data: bikeData,
-    refetch,
-    isLoading,
-    error,
-  } = useGetBikesQuery(undefined);
-  const [addBike, { isLoading: isAdding }] = useAddBikesMutation();
-  const [deleteBike] = useDeleteBikesMutation();
-  const [updateBike] = useUpdateBikesMutation();
+  const [isDetailModalVisible, setIsDetailModalVisible] =
+    useState<boolean>(false);
+  const [currentBike, setCurrentBike] = useState<Bike | null>(null);
+  const [createRental] = useCreateRentalMutation();
+
+  const { data: bikeData, isLoading, error } = useGetBikesQuery(undefined);
 
   useEffect(() => {
-    if (bikeData && Array.isArray(bikeData.data)) {
-      setBikes(bikeData.data);
-      setFilteredBikes(bikeData.data);
+    if (bikeData?.data) {
+      const availableBikes = bikeData.data.filter(
+        (bike: Bike) => bike.isAvailable
+      );
+      setBikes(availableBikes);
+      setFilteredBikes(availableBikes);
     }
   }, [bikeData]);
 
@@ -55,6 +57,15 @@ const BikeManagement = () => {
   const handleBrandChange = (value: string | undefined) => {
     setBrandFilter(value);
     filterBikes(searchText, value);
+  };
+
+  const handleBookNow = async (bike: Bike) => {
+    try {
+      await createRental({ bikeId: bike._id, startTime: new Date() }).unwrap();
+      message.success("Bike booked successfully! It is now marked as unPaid.");
+    } catch (error) {
+      message.error("Failed to book the bike. Please try again.");
+    }
   };
 
   const filterBikes = (text: string, brand: string | undefined) => {
@@ -69,72 +80,17 @@ const BikeManagement = () => {
     setFilteredBikes(filtered);
   };
 
-  const handleAddBike = async (values: any) => {
-    const bikeData = {
-      ...values,
-      pricePerHour: parseFloat(values.pricePerHour),
-      cc: parseInt(values.cc, 10),
-      year: parseInt(values.year, 10),
-    };
-
-    try {
-      await addBike(bikeData).unwrap();
-      message.success("Bike added successfully!");
-      refetch();
-      setIsAddModalVisible(false);
-      form.resetFields();
-    } catch (error) {
-      message.error("Failed to add bike. Please try again.");
-    }
-    navigate("/admin/bikeManagement");
-  };
-
-  const handleUpdateBike = async (values: any) => {
-    if (!currentBike?._id) {
-      message.error("Bike ID is missing.");
-      return;
-    }
-
-    const bikeData = {
-      ...values,
-      pricePerHour: parseFloat(values.pricePerHour),
-      cc: parseInt(values.cc, 10),
-      year: parseInt(values.year, 10),
-    };
-
-    try {
-      await updateBike({ id: currentBike._id, data: bikeData }).unwrap();
-      message.success("Bike updated successfully!");
-      refetch();
-      setIsUpdateModalVisible(false);
-      setCurrentBike(null);
-    } catch (error) {
-      message.error("Failed to update bike. Please try again.");
-    }
-  };
-
-  const handleDelete = async (id: string) => {
-    try {
-      await deleteBike(id).unwrap();
-      message.success("Bike deleted successfully!");
-      setBikes(bikes.filter((bike) => bike._id !== id));
-      filterBikes(searchText, brandFilter);
-    } catch (error) {
-      message.error("Failed to delete bike. Please try again.");
-    }
-  };
-
-  const showUpdateBikeModal = (bike: any) => {
+  const showBikeDetails = (bike: Bike) => {
     setCurrentBike(bike);
-    form.setFieldsValue(bike);
-    setIsUpdateModalVisible(true);
+    setIsDetailModalVisible(true);
   };
 
   const columns = [
     {
       title: "Brand",
       dataIndex: "brand",
-      key: "brands",
+      key: "brand",
+      responsive: ["md"],
     },
     {
       title: "Model",
@@ -150,45 +106,38 @@ const BikeManagement = () => {
           {text ? "Available" : "Not Available"}
         </span>
       ),
+      responsive: ["md"],
     },
     {
       title: "Actions",
       key: "actions",
-      render: (_: any, record: any) => (
+      render: (_: any, record: Bike) => (
         <Space size="middle">
           <Button
-            className="bg-gradient-to-r to-pink-500 from-cyan-300 text-white"
-            onClick={() => showUpdateBikeModal(record)}
+            className="bg-cyan-400 text-white"
+            onClick={() => showBikeDetails(record)}
           >
-            Update
+            Details
           </Button>
           <Button
-            className="bg-gradient-to-r from-pink-500 to-cyan-300 text-white"
-            onClick={() => handleDelete(record._id)}
+            className="bg-pink-500 text-white"
+            onClick={() => handleBookNow(record)}
           >
-            Delete
+            Book
           </Button>
         </Space>
       ),
     },
   ];
 
-  const showAddBikeModal = () => {
-    setIsAddModalVisible(true);
-  };
-
-  const handleCancelAdd = () => {
-    setIsAddModalVisible(false);
-  };
-
-  const handleCancelUpdate = () => {
-    setIsUpdateModalVisible(false);
-    setCurrentBike(null);
-  };
-
   const getUniqueBrands = () => {
     const brands = bikes.map((bike) => bike.brand);
     return Array.from(new Set(brands));
+  };
+
+  const handleCancel = () => {
+    setIsDetailModalVisible(false);
+    setCurrentBike(null);
   };
 
   if (isLoading) return <Loading />;
@@ -203,214 +152,79 @@ const BikeManagement = () => {
       >
         <div
           style={{ marginBottom: 16 }}
-          className="flex flex-wrap justify-between gap-4"
+          className="flex justify-between flex-wrap"
         >
-          {" "}
-          <div className="flex flex-wrap gap-4">
-            <div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/2">
-              <Input
-                placeholder="Search by brand or model"
-                value={searchText}
-                onChange={(e) => handleSearch(e.target.value)}
-                prefix={<SearchOutlined />}
-                className="w-full"
-              />
-            </div>
-            <div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4">
-              <Select
-                placeholder="Filter by brand"
-                className="w-full"
-                onChange={handleBrandChange}
-                allowClear
-              >
-                {getUniqueBrands().map((brand) => (
-                  <Select.Option key={brand} value={brand}>
-                    {brand}
-                  </Select.Option>
-                ))}
-              </Select>
-            </div>
+          <div className="w-full sm:w-auto mb-2 sm:mb-0">
+            <Input
+              placeholder="Search by brand or model"
+              value={searchText}
+              onChange={(e) => handleSearch(e.target.value)}
+              prefix={<SearchOutlined />}
+              style={{ width: "100%", maxWidth: 300, marginRight: 16 }}
+            />
           </div>
-          <div className="flex justify-end">
-            <Button
-              className="bg-[#72445e] text-white"
-              onClick={showAddBikeModal}
+          <div className="w-full sm:w-auto">
+            <Select
+              placeholder="Filter by brand"
+              style={{ width: "100%", maxWidth: 200 }}
+              onChange={handleBrandChange}
+              allowClear
             >
-              Add Bike
-            </Button>
+              {getUniqueBrands().map((brand) => (
+                <Select.Option key={brand} value={brand}>
+                  {brand}
+                </Select.Option>
+              ))}
+            </Select>
           </div>
         </div>
-
         <Table
+          // @ts-ignore
           columns={columns}
           dataSource={filteredBikes}
           rowKey="_id"
           pagination={{ pageSize: 10 }}
-          scroll={{ x: 600 }}
           bordered
+          scroll={{ x: "100%" }}
         />
       </Card>
 
       <Modal
-        title="Add New Bike"
-        open={isAddModalVisible}
-        onCancel={handleCancelAdd}
-        footer={null}
+        title="Bike Details"
+        visible={isDetailModalVisible}
+        onCancel={handleCancel}
+        footer={[
+          <Button key="close" onClick={handleCancel}>
+            Close
+          </Button>,
+        ]}
       >
-        <Form form={form} layout="vertical" onFinish={handleAddBike}>
-          <Form.Item
-            name="name"
-            label="Name"
-            rules={[{ required: true, message: "Please enter bike name" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="description"
-            label="Description"
-            rules={[
-              { required: true, message: "Please enter bike description" },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="pricePerHour"
-            label="Price Per Hour"
-            rules={[{ required: true, message: "Please enter price per hour" }]}
-          >
-            <Input type="number" />
-          </Form.Item>
-          <Form.Item
-            name="cc"
-            label="CC"
-            rules={[{ required: true, message: "Please enter bike CC" }]}
-          >
-            <Input type="number" />
-          </Form.Item>
-          <Form.Item
-            name="year"
-            label="Year"
-            rules={[{ required: true, message: "Please enter bike year" }]}
-          >
-            <Input type="number" />
-          </Form.Item>
-          <Form.Item
-            name="model"
-            label="Model"
-            rules={[{ required: true, message: "Please enter bike model" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="brand"
-            label="Brand"
-            rules={[{ required: true, message: "Please enter bike brand" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="isAvailable"
-            label="Availability"
-            rules={[{ required: true, message: "Please select availability" }]}
-          >
-            <Select>
-              <Select.Option value={true}>Available</Select.Option>
-              <Select.Option value={false}>Not Available</Select.Option>
-            </Select>
-          </Form.Item>
-          <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              loading={isAdding}
-              className="bg-[#72445e]"
-            >
-              Add Bike
-            </Button>
-          </Form.Item>
-        </Form>
-      </Modal>
-
-      <Modal
-        title="Update Bike"
-        open={isUpdateModalVisible}
-        onCancel={handleCancelUpdate}
-        footer={null}
-      >
-        <Form form={form} layout="vertical" onFinish={handleUpdateBike}>
-          <Form.Item
-            name="name"
-            label="Name"
-            rules={[{ required: true, message: "Please enter bike name" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="description"
-            label="Description"
-            rules={[
-              { required: true, message: "Please enter bike description" },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="pricePerHour"
-            label="Price Per Hour"
-            rules={[{ required: true, message: "Please enter price per hour" }]}
-          >
-            <Input type="number" />
-          </Form.Item>
-          <Form.Item
-            name="cc"
-            label="CC"
-            rules={[{ required: true, message: "Please enter bike CC" }]}
-          >
-            <Input type="number" />
-          </Form.Item>
-          <Form.Item
-            name="year"
-            label="Year"
-            rules={[{ required: true, message: "Please enter bike year" }]}
-          >
-            <Input type="number" />
-          </Form.Item>
-          <Form.Item
-            name="model"
-            label="Model"
-            rules={[{ required: true, message: "Please enter bike model" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="brand"
-            label="Brand"
-            rules={[{ required: true, message: "Please enter bike brand" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="isAvailable"
-            label="Availability"
-            rules={[{ required: true, message: "Please select availability" }]}
-          >
-            <Select>
-              <Select.Option value={true}>Available</Select.Option>
-              <Select.Option value={false}>Not Available</Select.Option>
-            </Select>
-          </Form.Item>
-          <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              loading={isAdding}
-              className="bg-[#72445e]"
-            >
-              Update Bike
-            </Button>
-          </Form.Item>
-        </Form>
+        {currentBike && (
+          <div>
+            <p>
+              <strong>Brand:</strong> {currentBike.brand}
+            </p>
+            <p>
+              <strong>Model:</strong> {currentBike.model}
+            </p>
+            <p>
+              <strong>CC:</strong> {currentBike.cc}
+            </p>
+            <p>
+              <strong>Year:</strong> {currentBike.year}
+            </p>
+            <p>
+              <strong>Description:</strong> {currentBike.description}
+            </p>
+            <p>
+              <strong>Availability:</strong>{" "}
+              {currentBike.isAvailable ? "Available" : "Not Available"}
+            </p>
+            <p>
+              <strong>Price Per Hour:</strong> ${currentBike.pricePerHour}
+            </p>
+          </div>
+        )}
       </Modal>
     </div>
   );

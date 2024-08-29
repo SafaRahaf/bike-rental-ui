@@ -41,8 +41,13 @@ const MyRentalsPage = () => {
         message.error(`Rental was updated, but the status is still unpaid.`);
       }
     } catch (error) {
-      message.error("Payment failed. Please try again.");
-      console.error(error?.message);
+      if (error instanceof Error) {
+        message.error("Payment failed. Please try again.");
+        console.error(error.message);
+      } else {
+        message.error("An unknown error occurred. Please try again.");
+        console.error(error);
+      }
     }
   };
 
@@ -82,7 +87,7 @@ const MyRentalsPage = () => {
     <div className="overflow-x-auto">
       <Modal
         title="Spin the Wheel for a Discount!"
-        visible={isModalVisible}
+        open={isModalVisible}
         footer={null}
         closable={false}
       >

@@ -4,6 +4,13 @@ import { useRegisterMutation } from "../redux/features/auth.api";
 import { useAppDispatch } from "../redux/hooks";
 import { setUser } from "../redux/features/authSlice";
 
+interface RegisterError {
+  data?: {
+    message: string;
+  };
+  status?: number;
+}
+
 const Register = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
@@ -17,7 +24,8 @@ const Register = () => {
       message.success("Registration successful!");
       navigate("/user");
     } catch (error) {
-      message.error(error?.data?.message || "Registration failed");
+      const typedError = error as RegisterError; // Type the error object
+      message.error(typedError.data?.message || "Registration failed");
     }
   };
 

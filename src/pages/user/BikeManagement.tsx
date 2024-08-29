@@ -1,5 +1,14 @@
 import { useState, useEffect } from "react";
-import { Table, Button, Input, Space, Select, Card, Modal } from "antd";
+import {
+  Table,
+  Button,
+  Input,
+  Space,
+  Select,
+  Card,
+  Modal,
+  message,
+} from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import {
   useCreateRentalMutation,
@@ -7,13 +16,25 @@ import {
 } from "../../redux/features/user.api";
 import Loading from "../../components/layout/Loading";
 
+interface Bike {
+  _id: string;
+  brand: string;
+  model: string;
+  cc: number;
+  year: number;
+  description: string;
+  pricePerHour: number;
+  isAvailable: boolean;
+}
+
 const BikeManagement = () => {
-  const [bikes, setBikes] = useState([]);
-  const [filteredBikes, setFilteredBikes] = useState([]);
-  const [searchText, setSearchText] = useState("");
+  const [bikes, setBikes] = useState<Bike[]>([]);
+  const [filteredBikes, setFilteredBikes] = useState<Bike[]>([]);
+  const [searchText, setSearchText] = useState<string>("");
   const [brandFilter, setBrandFilter] = useState<string | undefined>(undefined);
-  const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
-  const [currentBike, setCurrentBike] = useState<any>(null);
+  const [isDetailModalVisible, setIsDetailModalVisible] =
+    useState<boolean>(false);
+  const [currentBike, setCurrentBike] = useState<Bike | null>(null);
   const [createRental] = useCreateRentalMutation();
 
   const { data: bikeData, isLoading, error } = useGetBikesQuery(undefined);
@@ -21,7 +42,7 @@ const BikeManagement = () => {
   useEffect(() => {
     if (bikeData?.data) {
       const availableBikes = bikeData.data.filter(
-        (bike: any) => bike.isAvailable
+        (bike: Bike) => bike.isAvailable
       );
       setBikes(availableBikes);
       setFilteredBikes(availableBikes);
@@ -38,12 +59,11 @@ const BikeManagement = () => {
     filterBikes(searchText, value);
   };
 
-  const handleBookNow = async (bike: any) => {
+  const handleBookNow = async (bike: Bike) => {
     try {
       await createRental({ bikeId: bike._id, startTime: new Date() }).unwrap();
       message.success("Bike booked successfully! It is now marked as unPaid.");
     } catch (error) {
-      console.error("Error booking bike:", error);
       message.error("Failed to book the bike. Please try again.");
     }
   };
@@ -60,7 +80,7 @@ const BikeManagement = () => {
     setFilteredBikes(filtered);
   };
 
-  const showBikeDetails = (bike: any) => {
+  const showBikeDetails = (bike: Bike) => {
     setCurrentBike(bike);
     setIsDetailModalVisible(true);
   };
@@ -91,7 +111,7 @@ const BikeManagement = () => {
     {
       title: "Actions",
       key: "actions",
-      render: (_: any, record: any) => (
+      render: (_: any, record: Bike) => (
         <Space size="middle">
           <Button
             className="bg-cyan-400 text-white"
@@ -100,7 +120,7 @@ const BikeManagement = () => {
             Details
           </Button>
           <Button
-            className="bg-pink-500  text-white"
+            className="bg-pink-500 text-white"
             onClick={() => handleBookNow(record)}
           >
             Book
@@ -159,6 +179,7 @@ const BikeManagement = () => {
           </div>
         </div>
         <Table
+          //@ts-ignore
           columns={columns}
           dataSource={filteredBikes}
           rowKey="_id"

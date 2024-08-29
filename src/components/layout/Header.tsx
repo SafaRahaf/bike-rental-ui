@@ -6,16 +6,13 @@ import { UserOutlined, MenuOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import { useAppDispatch } from "../../redux/hooks";
 import { logout } from "../../redux/features/authSlice";
-import { useLoginMutation } from "../../redux/features/auth.api";
 
 const { Header } = Layout;
 const { Title } = Typography;
 
 const AppHeader = () => {
   const location = useLocation();
-  const [login, { isLoading }] = useLoginMutation();
   const isUserPath = location.pathname.startsWith("/user");
-  const isAdminPath = location.pathname.startsWith("/admin");
 
   const dispatch = useAppDispatch();
   const [visible, setVisible] = useState(false);

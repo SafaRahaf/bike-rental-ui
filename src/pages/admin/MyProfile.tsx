@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Card, Col, Row, Button, Form, Input, message, Spin } from "antd";
+import { Card, Col, Row, Button, Form, Input, message } from "antd";
 import {
   useGetProfileInfoQuery,
   useUpdateProfileInfoMutation,

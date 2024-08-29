@@ -10,6 +10,10 @@ import { RootState } from "../store";
 import { logout, setUser } from "../features/authSlice";
 import { toast } from "sonner";
 
+interface ErrorData {
+  message: string;
+}
+
 const baseQuery = fetchBaseQuery({
   baseUrl: "https://bike-rental-sigma.vercel.app/api",
   credentials: "include",
@@ -29,11 +33,13 @@ const baseQueryWithRefreshToken: BaseQueryFn<
 > = async (args, api, extraOptions): Promise<any> => {
   let result = await baseQuery(args, api, extraOptions);
 
-  if (result?.error?.status === 404) {
-    toast.error(result.error.data.message);
+  const errorData = result.error?.data as ErrorData;
+
+  if (result?.error?.status === 404 && errorData) {
+    toast.error(errorData.message);
   }
-  if (result?.error?.status === 403) {
-    toast.error(result.error.data.message);
+  if (result?.error?.status === 403 && errorData) {
+    toast.error(errorData.message);
   }
   if (result?.error?.status === 401) {
     console.log("Sending refresh token");
