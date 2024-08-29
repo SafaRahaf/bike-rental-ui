@@ -15,7 +15,7 @@ interface ErrorData {
 }
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: "https://bike-rental-sigma.vercel.app/api",
+  baseUrl: "https://bike-rental-100.vercel.app/api",
   credentials: "include",
   prepareHeaders: (headers, { getState }) => {
     const token = (getState() as RootState).auth.token;
@@ -45,7 +45,7 @@ const baseQueryWithRefreshToken: BaseQueryFn<
     console.log("Sending refresh token");
 
     const res = await fetch(
-      "https://bike-rental-sigma.vercel.app/api/auth/referesh-token",
+      "https://bike-rental-100.vercel.app/api/auth/referesh-token",
       {
         method: "POST",
         credentials: "include",
